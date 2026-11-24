@@ -1,10 +1,11 @@
+
 name: Build Android APK
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'Android_Control_Center_v0.2.zip'
+      - 'Android_Control_Center_Android_v0.2/**'
       - '.github/workflows/build-apk.yml'
 
 jobs:
@@ -36,18 +37,13 @@ jobs:
           SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -n 1)"
           "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Extract project
-        run: |
-          mkdir project
-          unzip -q Android_Control_Center_v0.2.zip -d project
-
       - name: Build APK
         run: |
-          cd project/Android_Control_Center_Android_v0.2
+          cd Android_Control_Center_Android_v0.2
           gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Android-Control-Center-APK
-          path: project/Android_Control_Center_Android_v0.2/app/build/outputs/apk/debug/app-debug.apk
+          path: Android_Control_Center_Android_v0.2/app/build/outputs/apk/debug/app-debug.apk
